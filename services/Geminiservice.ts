@@ -1,14 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-const getAiClient = () => {
-  if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable is not set");
-  }
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
-};
-
+// FIX: Removed apiKey parameter. The client will be initialized with the key from environment variables.
 export const analyzeYarnImage = async (base64ImageData: string): Promise<string> => {
-  const ai = getAiClient();
+  // FIX: Initialize client with API key from environment variables as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const imagePart = {
     inlineData: {
       mimeType: 'image/jpeg',
@@ -27,8 +22,10 @@ export const analyzeYarnImage = async (base64ImageData: string): Promise<string>
   return response.text;
 };
 
+// FIX: Removed apiKey parameter. The client will be initialized with the key from environment variables.
 export const generateKnittingPattern = async (yarnAnalysis: string): Promise<string> => {
-  const ai = getAiClient();
+  // FIX: Initialize client with API key from environment variables as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Based on the following yarn analysis, generate a detailed, beginner-friendly knitting pattern for one of the suggested projects. Pick the most interesting one. Make sure to include needle size recommendations, cast-on instructions, the main pattern stitch, and finishing instructions. Format it nicely using markdown.\n\nYarn Analysis:\n${yarnAnalysis}`;
   
   const response = await ai.models.generateContent({
@@ -42,8 +39,10 @@ export const generateKnittingPattern = async (yarnAnalysis: string): Promise<str
   return response.text;
 };
 
+// FIX: Removed apiKey parameter. The client will be initialized with the key from environment variables.
 export const generateProjectImage = async (yarnAnalysis: string): Promise<string> => {
-  const ai = getAiClient();
+  // FIX: Initialize client with API key from environment variables as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `Generate a photorealistic image of a finished knitting project based on this description. The project should look handmade and cozy, styled in a bright, modern setting.\n\nProject Description:\n${yarnAnalysis}`;
 
   const response = await ai.models.generateImages({
@@ -69,11 +68,13 @@ const videoLoadingMessages = [
     "Weaving your yarn's story into a beautiful video..."
 ];
 
+// FIX: Removed apiKey parameter. The client will be initialized with the key from environment variables.
 export const generateYarnVideo = async (
   base64ImageData: string,
   aspectRatio: '16:9' | '9:16'
 ): Promise<string> => {
-  const ai = getAiClient();
+  // FIX: Initialize client with API key from environment variables as per guidelines.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = "Create a short, magical video showing this yarn being transformed into a beautiful knitted item. Start with a close-up of the yarn, then show knitting needles magically working, and end with the finished product appearing.";
 
   let operation = await ai.models.generateVideos({
@@ -111,6 +112,7 @@ export const generateYarnVideo = async (
     throw new Error("Video generation did not return a valid download link.");
   }
   
+  // FIX: Use API key from environment variables for fetching the video.
   const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch video: ${response.statusText}`);
